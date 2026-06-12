@@ -485,14 +485,17 @@ input,textarea{font-family:inherit;outline:none;border:none}
       </div>
       <div class="tdiv"></div>
       <div class="tg">
-        <button class="tbtn" id="imgbtn" data-tip="Insert Image">
+        <label class="tbtn" for="imgfile" data-tip="Insert Image" style="cursor:pointer;">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><rect x="2.5" y="4.5" width="15" height="11" rx="2"/><circle cx="7" cy="8.5" r="1.5"/><path d="M2.5 13.5l4-4 3 3 2.5-2.5 3.5 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <input type="file" id="imgfile" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;"/>
-        </button>
+        </label>
+        <input type="file" id="imgfile" accept="image/*" style="display:none;"/>
         <button class="tbtn" id="exportbtn" data-tip="Export as PNG">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><path d="M10 3v10M7 10l3 3 3-3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 14v2.5h11V14" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
+      <div class="tdiv"></div>
+      <div class="tg">
+        <button class="tbtn" id="undobtn" data-tip="Undo  [Ctrl+Z]">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><path d="M4.5 7.5h8a5 5 0 010 10H7" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.5 4.5L4.5 7.5l3 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <button class="tbtn" id="redobtn" data-tip="Redo  [Ctrl+Y]">
@@ -1730,6 +1733,8 @@ function doJoin(){
   socket.emit('join',{room,name});
   document.getElementById('join-modal').style.display='none';
   document.getElementById('app').classList.remove('hidden');
+  // Canvas was measured while app was hidden (got 0×0) — re-measure now it's visible
+  setTimeout(()=>{ resizeCanvas(); markDirty(); }, 30);
 }
 document.getElementById('jbtn').addEventListener('click',doJoin);
 document.getElementById('jname').addEventListener('keydown',e=>{ if(e.key==='Enter') doJoin(); });
