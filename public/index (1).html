@@ -16,7 +16,7 @@ input,textarea{font-family:inherit;outline:none;border:none}
 /* ── Tokens ─────────────────────────────────────────────────────── */
 :root{
   --hh:52px;
-  --tw:58px;
+  --tw:74px;
   --font:'DM Sans',sans-serif;
   --brand:'Syne',sans-serif;
   --hbg:#13142a;
@@ -141,20 +141,26 @@ input,textarea{font-family:inherit;outline:none;border:none}
 #tb{
   width:var(--tw);background:var(--tbg);
   display:flex;flex-direction:column;align-items:center;
-  padding:8px 0;border-right:1px solid var(--bdr);
+  padding:6px 0;border-right:1px solid var(--bdr);
   z-index:200;flex-shrink:0;box-shadow:var(--sh1);
   overflow-y:auto;overflow-x:hidden;
 }
 #tb::-webkit-scrollbar{display:none}
-.tg{display:flex;flex-direction:column;align-items:center;padding:3px 0;width:100%}
-.tdiv{width:34px;height:1px;background:var(--bdr);margin:5px 0}
+.tg{display:flex;flex-direction:column;align-items:center;padding:2px 0;width:100%}
+.tdiv{width:44px;height:1px;background:var(--bdr);margin:4px auto}
 .tbtn{
-  width:42px;height:42px;display:flex;align-items:center;justify-content:center;
+  width:62px;height:50px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;
   border-radius:10px;color:#666;transition:background .12s,color .12s;position:relative;
 }
 .tbtn:hover{background:var(--hov);color:var(--txt)}
 .tbtn.active{background:var(--actbg);color:var(--actc)}
-.tbtn svg{width:21px;height:21px;pointer-events:none}
+.tbtn svg{width:18px;height:18px;pointer-events:none;flex-shrink:0}
+.tlbl{
+  font-size:9.5px;font-weight:500;line-height:1;
+  color:inherit;pointer-events:none;letter-spacing:0.1px;
+  white-space:nowrap;
+}
 .tbtn[data-tip]::after{
   content:attr(data-tip);
   position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);
@@ -437,72 +443,93 @@ input,textarea{font-family:inherit;outline:none;border:none}
       <div class="tg">
         <button class="tbtn" data-tool="select" data-tip="Select  [V]">
           <svg viewBox="0 0 20 20" fill="none"><path d="M5 2l11 8.5L11 12l-1.2 5.5L5 2z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+          <span class="tlbl">Select</span>
         </button>
         <button class="tbtn" data-tool="pan" data-tip="Pan  [H]">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65">
-            <path d="M7.5 2.5v7M7.5 9.5H4a1.5 1.5 0 000 3h3.5v1.5a2.5 2.5 0 005 0V12h1a1.5 1.5 0 000-3H12V7.5M12 7.5V4a1.5 1.5 0 00-3 0v3.5" stroke-linecap="round"/>
-          </svg>
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><path d="M7.5 2.5v7M7.5 9.5H4a1.5 1.5 0 000 3h3.5v1.5a2.5 2.5 0 005 0V12h1a1.5 1.5 0 000-3H12V7.5M12 7.5V4a1.5 1.5 0 00-3 0v3.5" stroke-linecap="round"/></svg>
+          <span class="tlbl">Pan</span>
         </button>
       </div>
       <div class="tdiv"></div>
       <div class="tg">
         <button class="tbtn active" data-tool="pen" data-tip="Pen  [P]">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><path d="M14.5 3.5l2 2L6 16l-3.5 1.5 1.5-3.5 10.5-10.5z" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 5.5l2 2" stroke-linecap="round"/></svg>
+          <span class="tlbl">Pen</span>
         </button>
         <button class="tbtn" data-tool="marker" data-tip="Marker">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><path d="M4.5 15.5l2-6 8-8 4 4-8 8-6 2z" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 4.5l2.5 2.5" stroke-linecap="round"/></svg>
+          <span class="tlbl">Marker</span>
         </button>
         <button class="tbtn" data-tool="highlighter" data-tip="Highlighter">
           <svg viewBox="0 0 20 20" fill="none"><rect x="5" y="9.5" width="10" height="5.5" rx="2" fill="rgba(254,240,0,.55)" stroke="currentColor" stroke-width="1.65"/><path d="M8.5 9.5V6h3v3.5" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"/><line x1="8.5" y1="15" x2="8.5" y2="17" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"/><line x1="11.5" y1="15" x2="11.5" y2="17" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"/></svg>
+          <span class="tlbl">Hi-light</span>
         </button>
         <button class="tbtn" data-tool="eraser" data-tip="Eraser  [E]">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><path d="M15.5 4.5L7 13" stroke-linecap="round"/><path d="M5.5 14.5l3.5-3.5 3 3H5.5z" fill="currentColor" opacity=".2" stroke-linejoin="round"/><rect x="3" y="14.5" width="8" height="2.5" rx="1"/></svg>
+          <span class="tlbl">Eraser</span>
         </button>
       </div>
       <div class="tdiv"></div>
       <div class="tg">
         <button class="tbtn" data-tool="rect" data-tip="Rectangle  [R]">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><rect x="3.5" y="5" width="13" height="10" rx="1.5"/></svg>
+          <span class="tlbl">Rect</span>
         </button>
         <button class="tbtn" data-tool="ellipse" data-tip="Ellipse  [O]">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><ellipse cx="10" cy="10" rx="7" ry="5.5"/></svg>
+          <span class="tlbl">Ellipse</span>
         </button>
         <button class="tbtn" data-tool="line" data-tip="Line  [L]">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><line x1="3.5" y1="16.5" x2="16.5" y2="3.5" stroke-linecap="round"/></svg>
+          <span class="tlbl">Line</span>
         </button>
         <button class="tbtn" data-tool="arrow" data-tip="Arrow  [A]">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><line x1="4" y1="16" x2="15.5" y2="4.5" stroke-linecap="round"/><path d="M8.5 4.5h7v7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="tlbl">Arrow</span>
         </button>
       </div>
       <div class="tdiv"></div>
       <div class="tg">
         <button class="tbtn" data-tool="text" data-tip="Text  [T]">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><path d="M4 6.5h12M10 6.5v9M7.5 15.5h5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="tlbl">Text</span>
         </button>
         <button class="tbtn" data-tool="sticky" data-tip="Sticky Note  [S]">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><rect x="3.5" y="3.5" width="13" height="13" rx="2"/><line x1="3.5" y1="7.5" x2="16.5" y2="7.5" stroke-linecap="round"/><line x1="7" y1="11" x2="13" y2="11" stroke-linecap="round"/><line x1="7" y1="13.5" x2="11" y2="13.5" stroke-linecap="round"/></svg>
+          <span class="tlbl">Sticky</span>
         </button>
       </div>
       <div class="tdiv"></div>
       <div class="tg">
-        <label class="tbtn" for="imgfile" data-tip="Insert Image" style="cursor:pointer;">
+        <!-- PASTE: triggers clipboard paste via JS -->
+        <button class="tbtn" id="pastebtn" data-tip="Paste image from clipboard  [Ctrl+V]">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><rect x="6" y="3" width="9" height="13" rx="1.5"/><path d="M6 5H4.5A1.5 1.5 0 003 6.5v10A1.5 1.5 0 004.5 18h8a1.5 1.5 0 001.5-1.5V16" stroke-linecap="round"/><path d="M9 3v2h3V3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="tlbl">Paste</span>
+        </button>
+        <!-- UPLOAD: file picker -->
+        <label class="tbtn" for="imgfile" data-tip="Upload image from your PC" style="cursor:pointer;">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><rect x="2.5" y="4.5" width="15" height="11" rx="2"/><circle cx="7" cy="8.5" r="1.5"/><path d="M2.5 13.5l4-4 3 3 2.5-2.5 3.5 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="tlbl">Upload</span>
         </label>
-        <input type="file" id="imgfile" accept="image/*" style="display:none;"/>
-        <button class="tbtn" id="exportbtn" data-tip="Export as PNG">
+        <input type="file" id="imgfile" accept="image/*,image/png,image/jpeg,image/gif,image/webp,image/svg+xml" style="display:none;"/>
+        <button class="tbtn" id="exportbtn" data-tip="Export board as PNG">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><path d="M10 3v10M7 10l3 3 3-3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 14v2.5h11V14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="tlbl">Export</span>
         </button>
       </div>
       <div class="tdiv"></div>
       <div class="tg">
         <button class="tbtn" id="undobtn" data-tip="Undo  [Ctrl+Z]">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><path d="M4.5 7.5h8a5 5 0 010 10H7" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.5 4.5L4.5 7.5l3 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="tlbl">Undo</span>
         </button>
         <button class="tbtn" id="redobtn" data-tip="Redo  [Ctrl+Y]">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><path d="M15.5 7.5h-8a5 5 0 000 10H13" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 4.5l3 3-3 3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="tlbl">Redo</span>
         </button>
-        <button class="tbtn" id="clearbtn" data-tip="Clear Board">
+        <button class="tbtn" id="clearbtn" data-tip="Clear entire board">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.65"><polyline points="3,6 17,6" stroke-linecap="round"/><path d="M8 6V4.5h4V6M5 6l1.2 11h7.6L15 6" stroke-linecap="round" stroke-linejoin="round"/><line x1="8.5" y1="9.5" x2="8.5" y2="13.5" stroke-linecap="round"/><line x1="11.5" y1="9.5" x2="11.5" y2="13.5" stroke-linecap="round"/></svg>
+          <span class="tlbl">Clear</span>
         </button>
       </div>
     </nav>
@@ -1689,6 +1716,61 @@ function insertImageFile(file, dropPos=null){
   };
   reader.readAsDataURL(file);
 }
+
+// ════════════════════════════════════════════════════════════════════
+// CLIPBOARD PASTE  (Ctrl+V  or  the Paste button)
+// ════════════════════════════════════════════════════════════════════
+function triggerPaste(){
+  if(navigator.clipboard && navigator.clipboard.read){
+    navigator.clipboard.read().then(items=>{
+      for(const item of items){
+        const imgType=item.types.find(t=>t.startsWith('image/'));
+        if(imgType){
+          item.getType(imgType).then(blob=>{
+            insertImageFile(new File([blob],'paste.png',{type:imgType}));
+          });
+          return;
+        }
+        if(item.types.includes('text/plain')){
+          item.getType('text/plain').then(blob=>{
+            blob.text().then(text=>{ if(text.trim()) pasteText(text.trim()); });
+          });
+          return;
+        }
+      }
+      showToast('Nothing found in clipboard');
+    }).catch(()=>showToast('Clipboard access denied — try Ctrl+V while the board is focused'));
+  } else {
+    showToast('Use Ctrl+V on the board to paste');
+  }
+}
+
+function pasteText(text){
+  const c=toWorld(canvas.width/2,canvas.height/2);
+  const el={id:uid(),type:'text',x:c.x-150,y:c.y-20,w:300,h:40,text,color:S.color,fontSize:S.fontSize};
+  addEl(el); setTool('select');
+  S.selIds.clear(); S.selIds.add(el.id); updateSelUI(); markDirty();
+  showToast('✓ Text pasted');
+}
+
+document.getElementById('pastebtn').addEventListener('click',triggerPaste);
+
+// Ctrl+V anywhere on the board
+window.addEventListener('paste',e=>{
+  const tag=document.activeElement?.tagName;
+  const ce=document.activeElement?.contentEditable;
+  if(tag==='TEXTAREA'||tag==='INPUT'||ce==='true') return; // let editors handle their own paste
+  const items=e.clipboardData?.items;
+  if(!items) return;
+  for(const item of items){
+    if(item.type.startsWith('image/')){
+      e.preventDefault();
+      const file=item.getAsFile(); if(file) insertImageFile(file); return;
+    }
+  }
+  const text=e.clipboardData.getData('text/plain').trim();
+  if(text){ e.preventDefault(); pasteText(text); }
+});
 
 // ════════════════════════════════════════════════════════════════════
 document.querySelectorAll('.tbtn[data-tool]').forEach(b=>b.addEventListener('click',()=>setTool(b.getAttribute('data-tool'))));
