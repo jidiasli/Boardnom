@@ -2,16 +2,36 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Boardnom – Collaborative Whiteboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 /* ── Reset ──────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden;background:#0e0e1a}
+html,body{
+  width:100%;height:100%;overflow:hidden;background:#0e0e1a;
+  /* Prevent ALL scrolling and selection on mobile */
+  overscroll-behavior:none;
+  touch-action:none;
+  -webkit-overflow-scrolling:none;
+}
 button{cursor:pointer;border:none;background:none;font-family:inherit}
 input,textarea{font-family:inherit;outline:none;border:none}
+
+/* Prevent text selection everywhere except actual text inputs */
+#app, #join-modal {
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  user-select:none;
+  /* Remove tap highlight on mobile (blue flash when tapping) */
+  -webkit-tap-highlight-color:transparent;
+}
+/* Allow selection inside real text inputs */
+input, textarea, [contenteditable=true] {
+  -webkit-user-select:text;
+  user-select:text;
+}
 
 /* ── Tokens ─────────────────────────────────────────────────────── */
 :root{
@@ -171,8 +191,10 @@ input,textarea{font-family:inherit;outline:none;border:none}
 .tbtn[data-tip]:hover::after{opacity:1}
 
 /* ── STAGE ──────────────────────────────────────────────────────── */
-#stage{flex:1;position:relative;overflow:hidden;background:var(--cbg);touch-action:none}
-#canvas{position:absolute;top:0;left:0;pointer-events:none}
+#stage{flex:1;position:relative;overflow:hidden;background:var(--cbg);touch-action:none;
+  -webkit-touch-callout:none; /* disable iOS long-press callout */
+}
+#canvas{position:absolute;top:0;left:0;pointer-events:none;touch-action:none}
 #canvas.can-events{pointer-events:all}
 
 /* ── POINTER CATCHER ────────────────────────────────────────────── */
@@ -659,6 +681,7 @@ const S = {
   selIds: new Set(),
   rubberBand: null,
   dragData: null,
+  canvasDrag: null,   // direct drag for canvas elements (paths, shapes, images)
 
   undoStack: [],
   redoStack: [],
@@ -1164,8 +1187,10 @@ window.addEventListener('pointermove',onMove);
 window.addEventListener('pointerup',onUp);
 
 function onDown(e){
+  // Middle mouse = pan; touch has no button so treat as left
   if(e.button===1){ startPan(e); return; }
   if(e.button!==0) return;
+  e.preventDefault(); // prevent browser drag-image, text-select, scroll on mobile
   S.isDown=true;
   S.wStart=ptrWorld(e);
   const tool=S.spaceDown?'pan':S.tool;
@@ -1182,7 +1207,11 @@ function onDown(e){
     if(hit){
       if(!e.shiftKey) S.selIds.clear();
       S.selIds.add(hit.id); updateSelUI(); markDirty();
-      startDrag(e,[...S.selIds]);
+      // Direct drag: store origin + per-element snapshots in global state
+      S.canvasDrag={
+        sx:e.clientX, sy:e.clientY,
+        snaps:[...S.selIds].map(id=>{const el=S.els.get(id);return el?getSnap(el):null;}).filter(Boolean)
+      };
     } else {
       if(!e.shiftKey){S.selIds.clear();updateSelUI();markDirty();}
       S.rubberBand={wx:S.wStart.x,wy:S.wStart.y};
@@ -1222,6 +1251,16 @@ function onMove(e){
     S.vp.y=S.panData.vy+(e.clientY-S.panData.sy);
     updateWorldTransform(); markDirty(); return;
   }
+  // Canvas element drag (images, paths, shapes)
+  if(S.canvasDrag){
+    const dx=(e.clientX-S.canvasDrag.sx)/S.vp.scale;
+    const dy=(e.clientY-S.canvasDrag.sy)/S.vp.scale;
+    S.canvasDrag.snaps.forEach(snap=>{
+      const el=S.els.get(snap.id); if(!el) return;
+      applyDelta(el,snap,dx,dy);
+    });
+    markDirty(); return;
+  }
   if(!S.isDown) return;
   const tool=S.spaceDown?'pan':S.tool;
   if(tool==='eraser'){ eraseAt(wp.x,wp.y); }
@@ -1242,6 +1281,18 @@ function onMove(e){
 
 function onUp(e){
   if(S.isPan){ stopPan(); }
+  // Finalize canvas element drag
+  if(S.canvasDrag){
+    const dx=(e.clientX-S.canvasDrag.sx)/S.vp.scale;
+    const dy=(e.clientY-S.canvasDrag.sy)/S.vp.scale;
+    if(Math.hypot(dx,dy)>1){
+      const nxt=S.canvasDrag.snaps.map(s=>{const el=S.els.get(s.id);return el?getSnap(el):null;}).filter(Boolean);
+      pushHistory({type:'move',prev:S.canvasDrag.snaps,next:nxt});
+      S.canvasDrag.snaps.forEach(s=>{const el=S.els.get(s.id);if(el) socket.emit('el:update',el);});
+    }
+    S.canvasDrag=null;
+    S.isDown=false; return;
+  }
   if(!S.isDown) return;
   S.isDown=false;
   const wp=ptrWorld(e);
@@ -1805,6 +1856,24 @@ function showToast(msg,ms=2600){
   toast.textContent=msg; toast.classList.add('show');
   clearTimeout(_toastT); _toastT=setTimeout(()=>toast.classList.remove('show'),ms);
 }
+
+// ════════════════════════════════════════════════════════════════════
+//  MOBILE: prevent scroll, selection, context menu on touch devices
+// ════════════════════════════════════════════════════════════════════
+document.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
+document.addEventListener('touchstart', e=>{
+  // Prevent double-tap zoom on iOS
+  if(e.touches.length>1) e.preventDefault();
+}, {passive:false});
+// Prevent long-press context menu (shows "copy/paste" popup on mobile)
+window.addEventListener('contextmenu', e=>{
+  if(e.target.closest('#stage')||e.target.closest('#tb')) e.preventDefault();
+});
+// Clear canvasDrag if pointer leaves window
+window.addEventListener('pointercancel', ()=>{
+  S.canvasDrag=null; S.isDown=false; S.isPan=false; S.panData=null;
+  stopPan();
+});
 
 // ════════════════════════════════════════════════════════════════════
 //  JOIN
