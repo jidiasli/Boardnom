@@ -1180,17 +1180,23 @@ function duplicateSel(){
 }
 
 // ════════════════════════════════════════════════════════════════════
-//  POINTER EVENTS
+//  POINTER EVENTS  — all routed through pcatch with pointer capture
 // ════════════════════════════════════════════════════════════════════
-pcatch.addEventListener('pointerdown',onDown);
-window.addEventListener('pointermove',onMove);
-window.addEventListener('pointerup',onUp);
+pcatch.addEventListener('pointerdown', onDown);
+pcatch.addEventListener('pointermove', onMove);
+pcatch.addEventListener('pointerup',   onUp);
+pcatch.addEventListener('pointercancel', ()=>{
+  S.canvasDrag=null; S.isDown=false; S.curPath=null; S.draftEl=null;
+  S.rubberBand=null; selbox.style.display='none';
+  if(S.isPan) stopPan();
+});
 
 function onDown(e){
-  // Middle mouse = pan; touch has no button so treat as left
+  // Middle mouse = pan
   if(e.button===1){ startPan(e); return; }
   if(e.button!==0) return;
-  e.preventDefault(); // prevent browser drag-image, text-select, scroll on mobile
+  // Capture this pointer so pointermove/pointerup always reach pcatch
+  pcatch.setPointerCapture(e.pointerId);
   S.isDown=true;
   S.wStart=ptrWorld(e);
   const tool=S.spaceDown?'pan':S.tool;
@@ -1869,12 +1875,6 @@ document.addEventListener('touchstart', e=>{
 window.addEventListener('contextmenu', e=>{
   if(e.target.closest('#stage')||e.target.closest('#tb')) e.preventDefault();
 });
-// Clear canvasDrag if pointer leaves window
-window.addEventListener('pointercancel', ()=>{
-  S.canvasDrag=null; S.isDown=false; S.isPan=false; S.panData=null;
-  stopPan();
-});
-
 // ════════════════════════════════════════════════════════════════════
 //  JOIN
 // ════════════════════════════════════════════════════════════════════
