@@ -1,0 +1,20 @@
+{
+  "name": "boardnom",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Boardnom - a free, real-time collaborative whiteboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

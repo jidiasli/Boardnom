@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#16172b">
+  <title>Boardnom - collaborative whiteboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <!-- Join screen -->
+  <div id="join" class="join">
+    <form id="joinForm" class="join-card">
+      <div class="brand big"><span class="brand-mark"></span>Boardnom</div>
+      <p class="join-lead">A shared canvas for you and your friends. No account needed.</p>
+      <label for="joinName">Your name</label>
+      <input id="joinName" type="text" maxlength="24" autocomplete="nickname" placeholder="e.g. Jayde" required>
+      <button class="btn primary wide" type="submit">Join board</button>
+    </form>
+  </div>
+
+  <!-- App -->
+  <div id="app" hidden>
+    <header id="topbar">
+      <div class="brand"><span class="brand-mark"></span>Boardnom</div>
+      <div class="status"><span id="statusDot" class="dot" data-state="connecting"></span><span id="statusText">Connecting…</span></div>
+      <div class="spacer"></div>
+      <span id="peopleCount" class="muted-light"></span>
+      <div id="users" class="users" aria-label="People on this board"></div>
+      <button id="shareBtn" class="btn primary" type="button"></button>
+    </header>
+
+    <nav id="toolbar" aria-label="Tools"></nav>
+
+    <main id="stage">
+      <canvas id="board" tabindex="-1"></canvas>
+      <div id="overlay"></div>
+
+      <div id="props" hidden>
+        <div class="prop" data-for="color">
+          <span class="plabel">Colour</span>
+          <div id="swatches" class="swatches"></div>
+          <label class="swatch custom" title="Custom colour"><input id="colorInput" type="color" value="#1a1a2e" aria-label="Custom colour"></label>
+        </div>
+        <div class="prop" data-for="sticky">
+          <span class="plabel">Note colour</span>
+          <div id="stickySwatches" class="swatches"></div>
+        </div>
+        <div class="prop" data-for="width">
+          <label id="widthLabel" class="plabel" for="widthRange">Thickness</label>
+          <input id="widthRange" type="range" min="1" max="60" step="0.1" value="4">
+          <output id="widthOut" for="widthRange">4</output>
+          <span class="dotwrap"><span id="widthDot"></span></span>
+        </div>
+        <div class="prop" data-for="font">
+          <label class="plabel" for="fontRange">Text size</label>
+          <input id="fontRange" type="range" min="10" max="120" step="1" value="24">
+          <output id="fontOut" for="fontRange">24px</output>
+        </div>
+        <div class="prop" data-for="fill">
+          <label class="check"><input id="fillCheck" type="checkbox"> Fill shape</label>
+        </div>
+      </div>
+
+      <div id="zoombar" aria-label="Zoom">
+        <button id="zoomOut" type="button" title="Zoom out (-)" aria-label="Zoom out"></button>
+        <button id="zoomPct" type="button" title="Reset to 100%">100%</button>
+        <button id="zoomIn" type="button" title="Zoom in (+)" aria-label="Zoom in"></button>
+        <button id="zoomFit" type="button" title="Fit everything (0)" aria-label="Fit everything"></button>
+      </div>
+    </main>
+  </div>
+
+  <div id="dialogs"></div>
+  <div id="toasts" aria-live="polite"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>
